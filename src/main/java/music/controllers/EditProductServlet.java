@@ -25,7 +25,7 @@ public class EditProductServlet extends HttpServlet {
             req.setAttribute("product", ProductIO.getProduct(code));
         }
 
-        req.getRequestDispatcher("/WEB-INF/editProduct.jsp").forward(req, resp);
+        req.getRequestDispatcher("/editProduct.jsp").forward(req, resp);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class EditProductServlet extends HttpServlet {
         req.setAttribute("product", p);
         req.setAttribute("isNew", isNew);
         req.setAttribute("error", "Invalid entry");
-        req.getRequestDispatcher("/WEB-INF/editProduct.jsp").forward(req, resp);
+        req.getRequestDispatcher("/editProduct.jsp").forward(req, resp);
     }
 
 }
