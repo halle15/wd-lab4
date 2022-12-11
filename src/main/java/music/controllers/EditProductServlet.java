@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import music.data.ProductDB;
 import music.data.ProductIO;
 import music.models.Product;
 
@@ -22,7 +23,8 @@ public class EditProductServlet extends HttpServlet {
         req.setAttribute("isNew", code == null);
 
         if (code != null) {
-            req.setAttribute("product", ProductIO.getProduct(code));
+        	Product p = ProductDB.getProduct(code);
+            req.setAttribute("product", ProductDB.getProduct(code));
         }
 
         req.getRequestDispatcher("/editProduct.jsp").forward(req, resp);
@@ -54,10 +56,10 @@ public class EditProductServlet extends HttpServlet {
                 price != 0) {
 
             if (isNew) {
-                ProductIO.insertProduct(p);
+                ProductDB.addProduct(p);
             }
             else {
-                ProductIO.updateProduct(p);
+                ProductDB.editProduct(p);
             }
 
             resp.sendRedirect("productMaint.html");

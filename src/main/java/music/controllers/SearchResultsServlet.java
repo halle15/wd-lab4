@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import music.data.ProductDB;
 import music.data.ProductIO;
 
 @WebServlet("/searchResults")
@@ -18,7 +19,7 @@ public class SearchResultsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req,
             HttpServletResponse resp) throws ServletException, IOException {
 
-        req.setAttribute("products", ProductIO.getProducts());
+        req.setAttribute("products", ProductDB.getProducts());
         req.getRequestDispatcher("/searchResults.jsp").forward(req, resp);
     }
 

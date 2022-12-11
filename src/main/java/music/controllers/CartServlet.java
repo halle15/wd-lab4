@@ -14,6 +14,8 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
+import music.data.CartDB;
+import music.data.ProductDB;
 import music.data.ProductIO;
 import music.models.CartEntry;
 import music.models.Product;
@@ -26,7 +28,8 @@ public class CartServlet extends HttpServlet {
         HttpSession session = req.getSession();
 
         @SuppressWarnings("unchecked")
-        List<CartEntry> entries = (List<CartEntry>)session.getAttribute("cart");
+        List<CartEntry> entries = (List<CartEntry>) CartDB.getProducts();
+        session.setAttribute("cart", entries);
 
         if (entries == null) {
             entries = new ArrayList<CartEntry>();
@@ -53,40 +56,46 @@ public class CartServlet extends HttpServlet {
 
         String code = req.getParameter("productCode");
         String qtyString = req.getParameter("qty");
-        Product product = ProductIO.getProduct(code);
+        
+        Product product = ProductDB.getProduct(code);
 
         List<CartEntry> entries = getCartEntries(req);
         boolean alreadyInCart = false;
 
         Iterator<CartEntry> it = entries.iterator();
         while (it.hasNext()) {
+        
             CartEntry entry = it.next();
 
             if (!product.getCode().equals(entry.getProduct().getCode())) {
                 continue;
             }
-
+            	
             if (qtyString != null) {
                 //    Updating qty in cart
                 int qty = Integer.parseInt(qtyString);
 
                 if (qty == 0) {
+                	CartDB.deleteProduct(product.getCode());
                     it.remove();
                 }
                 else {
+                	CartDB.editProduct(new CartEntry(CartDB.getProduct(code).getProduct(), qty));
                     entry.setQty(qty);
                 }
             }
             else {
                 //    Adding an item to cart
+            	CartDB.addProduct(new CartEntry(product, 1));
                 entry.setQty(entry.getQty() + 1);
             }
-
+            
             alreadyInCart = true;
             break;
         }
 
         if (!alreadyInCart) {
+        	CartDB.addProduct(new CartEntry(product, 1));
             entries.add(new CartEntry(product, 1));
         }
 
